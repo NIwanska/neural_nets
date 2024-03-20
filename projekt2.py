@@ -9,7 +9,13 @@ import csv
 device = torch.device("cuda")
 data = pd.read_csv('train_data.csv')
 data_dropped = data.drop(columns=['HallwayType','HeatingType','AptManageType','SubwayStation', 'TimeToBusStop', 'TimeToSubway'])
-data_encoded = pd.concat([pd.get_dummies(data['HallwayType']),pd.get_dummies(data['HeatingType']),pd.get_dummies(data['AptManageType']), pd.get_dummies(data['SubwayStation']), pd.get_dummies(data['TimeToSubway']), pd.get_dummies(data['TimeToBusStop']), data_dropped])
+pd_HallwayTypepd = pd.get_dummies(data['HallwayType'],  dtype=float)
+pd_HeatingType = pd.get_dummies(data['HeatingType'],  dtype=float)
+pd_AptManageType = pd.get_dummies(data['AptManageType'],  dtype=float)
+pd_SubwayStation = pd.get_dummies(data['SubwayStation'],  dtype=float)
+pd_TimeToSubway = pd.get_dummies(data['TimeToSubway'],  dtype=float)
+pd_TimeToBusStop = pd.get_dummies(data['TimeToBusStop'],  dtype=float)
+data_encoded = pd.concat([pd_HallwayTypepd,pd_HeatingType ,pd_AptManageType,pd_SubwayStation,pd_TimeToSubway,pd_TimeToBusStop , data_dropped], axis=1, join='outer')
 print(pd.get_dummies(data['HeatingType']))
 print(data_encoded)
 X = data_encoded.drop(columns=['SalePrice']).values
@@ -18,7 +24,7 @@ Y = data_encoded['SalePrice'].values
 
 test_data = pd.read_csv('test_data.csv')
 test_data_dropped = test_data.drop(columns=['HallwayType','HeatingType','AptManageType','SubwayStation', 'TimeToBusStop', 'TimeToSubway'])
-test_data_encoded = pd.concat([pd.get_dummies(test_data['HallwayType']),pd.get_dummies(test_data['HeatingType']),pd.get_dummies(test_data['AptManageType']), pd.get_dummies(test_data['SubwayStation']), pd.get_dummies(test_data['TimeToSubway']), pd.get_dummies(test_data['TimeToBusStop']), test_data_dropped])
+test_data_encoded = pd.concat([pd.get_dummies(test_data['HallwayType']),pd.get_dummies(test_data['HeatingType']),pd.get_dummies(test_data['AptManageType']), pd.get_dummies(test_data['SubwayStation']), pd.get_dummies(test_data['TimeToSubway']), pd.get_dummies(test_data['TimeToBusStop']), test_data_dropped], axis=1, join='outer', dtype=float)
 
 test_data = test_data_encoded.astype('float32')
 test_data = torch.from_numpy(test_data.values[:,:])
